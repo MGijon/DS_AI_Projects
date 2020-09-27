@@ -1,33 +1,21 @@
-## Data Science Portfolio
-Data Science Portfolio
+## Data Science and Artificial Intelligence Portfolio
+
+This portfolio consists of several projects I have done in order to acquire and hone my skills in Data Science and Artificial Intelligence.
 
 ## Table of Contents
 
 | Project | Tags |
 | --- | --- |
-| [An analysis of word embedding spaces and regularities (Master Thesis)] (#thesis1) |
-<img src="https://img.shields.io/badge/-Published-black">
-<img src="https://img.shields.io/badge/-Embeddings-red">
-<img src="https://img.shields.io/badge/-Word%20Embeddings-red">
-<img src="https://img.shields.io/badge/-Python-blue"> |
-| [Analyzing Distances in Word Embeddings and Their Relation with Seme Analysis] (#paper1) |  
-<img src="https://img.shields.io/badge/-Published-black">
-<img src="https://img.shields.io/badge/-Embeddings-red">
-<img src="https://img.shields.io/badge/-Word%20Embeddings-red">
-<img src="https://img.shields.io/badge/-Python-blue">  |
-| [#BuildwithAI Global 2020: MUGA team Predictive Algorithm Challenge] (#hackathon1) |
-<img src="https://img.shields.io/badge/-Hackathon-grey">
-<img src="https://img.shields.io/badge/-Finalist%20Project-yellow">
-<img src="https://img.shields.io/badge/-Genetic%20Algorithms-90A4AE">
-<img src="https://img.shields.io/badge/-Epidemiological%20Models-green">
-<img src="https://img.shields.io/badge/-Python-blue"> |
+| [An analysis of word embedding spaces and regularities (Master Thesis)](#thesis1) |<img src="https://img.shields.io/badge/-Published-black"><img src="https://img.shields.io/badge/-Embeddings-red"><img src="https://img.shields.io/badge/-Word%20Embeddings-red"><img src="https://img.shields.io/badge/-Python-blue"> |
+| [Analyzing Distances in Word Embeddings and Their Relation with Seme Analysis](#paper1) |  <img src="https://img.shields.io/badge/-Published-black"><img src="https://img.shields.io/badge/-Embeddings-red"><img src="https://img.shields.io/badge/-Word%20Embeddings-red"><img src="https://img.shields.io/badge/-Python-blue">  |
+| [#BuildwithAI Global 2020: MUGA team Predictive Algorithm Challenge](#hackathon1) |<img src="https://img.shields.io/badge/-Hackathon-grey"><img src="https://img.shields.io/badge/-Finalist%20Project-yellow"><img src="https://img.shields.io/badge/-Genetic%20Algorithms-90A4AE"><img src="https://img.shields.io/badge/-Epidemiological%20Models-green"><img src="https://img.shields.io/badge/-Python-blue"> |
 
 ## Projects
 
 <a name="thesis1"></a>
 ###  [An analysis of word embedding spaces and regularities](https://upcommons.upc.edu/handle/2117/166266)
 
-[Repository](https://github.com/MGijon/Masters_thesis) | [Document] (https://upcommons.upc.edu/handle/2117/166266)
+[Repository](https://github.com/MGijon/Masters_thesis) | [Document](https://upcommons.upc.edu/handle/2117/166266)
 
 * Final Thesis of **Master's degree in Advanced Mathematics and Mathematical Engineering**.
 * Qualify with an 9 over 10.
@@ -42,10 +30,20 @@ Data Science Portfolio
 * Was publish in the **IOSPRESS, Artificial Intelligence Research and Development (Volume 319)**.
 * Was presented in the **22nd Conference of the Catalan Association of Artificial Intelligence**.
 
+<p float="left">
+  <img src="https://github.com/MGijon/Projects/images/paper1_GloVe300Synonyms.png?raw=true" height="250"/>
+  <img src="https://github.com/MGijon/Projects/images/paper1_Word2Vec300Synonyms.png?raw=true" height="250"/>
+</p>
+
 <a name="hackathon1"></a>
-### #BuildwithAI Global 2020: MUGA team Predictive Algorithm Challenge
+### [#BuildwithAI Global 2020: MUGA team Predictive Algorithm Challenge](https://github.com/MGijon/BuildwithAI_Predictive_Algorithm)
 
-[Repository] (https://github.com/MGijon/BuildwithAI_Predictive_Algorithm) | [Video presentation] (https://www.youtube.com/watch?v=jP4gXkgnZHI) | [Announcement of our award] (https://www.youtube.com/watch?v=VwN9XpXRkEo)
+[Repository](https://github.com/MGijon/BuildwithAI_Predictive_Algorithm) | [Video presentation](https://www.youtube.com/watch?v=jP4gXkgnZHI) | [Announcement of our award](https://www.youtube.com/watch?v=VwN9XpXRkEo)
 
-* We combined SEIRS model and genetic algorithms to predict covid cases in the USA.
-* A list of all participants can be found at the repository.
+* We combined SEIRS model and genetic algorithms to predict COVID cases in the USA.
+* A list of all members of the team **MUGA (Make Unicorns Great Again)** can be found at the repository of the project.
+
+<p float="left">
+  <img src="https://github.com/MGijon/Projects/images/builwithai_results.png?raw=true" height="250"/>
+  <img src="https://github.com/MGijon/Projects/images/builwithai_tesamlogo.png?raw=true" height="250"/>
+</p>

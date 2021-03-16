@@ -1,15 +1,12 @@
 """Main file of the project."""
-import os
-import wx       
+import os            #
+import wx            # 
 import cv2           # OpenCV-Python
 import uuid          # Universal Unique IDentifiers
-import numpy as np
-
+import numpy as np   # Numpy
 
 import vizualizator
 import tools
-
-# Bring the NN
 import net
 try:
     clf = net.learn()
@@ -95,7 +92,6 @@ class viewWindow(wx.Frame):
         print('Color:\t' + str(net.identify_color(self.image, clf)))
 
         # Partial fit color
-        
         color = net.identify_color(self.image, clf)
         image = self.image.reshape(1, 6912)
         color_int = tools.integerize(color)

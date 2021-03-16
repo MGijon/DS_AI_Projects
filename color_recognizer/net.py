@@ -52,7 +52,7 @@ def identify_color(src_image, net):
     image_resised = src_image.reshape(1, 6912)
     p = net.predict(image_resised)
 
-    return str(class_names[int(p)])
+    return str(0)#class_names[int(p)])
 
 def weights_to_image(net):
     # Only first layer is extracted

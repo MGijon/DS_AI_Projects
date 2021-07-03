@@ -1,12 +1,18 @@
-"""
-
-"""
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.applications import vgg19
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+
+ROUTE_RESULTS = "images/"
+MAX_ITERATIONS = 4000
+result_prefix = "paris_generated"
+
+# Weights of the different loss components
+total_variation_weight = 1e-6
+style_weight = 1e-6
+content_weight = 2.5e-8
 
 base_image_path = keras.utils.get_file(
     fname="paris.jpg", 
@@ -15,12 +21,6 @@ style_reference_image_path = keras.utils.get_file(
     fname="starry_night.jpg", 
     origin="https://i.imgur.com/9ooB60I.jpg"
 )
-result_prefix = "paris_generated"
-
-# Weights of the different loss components
-total_variation_weight = 1e-6
-style_weight = 1e-6
-content_weight = 2.5e-8
 
 # Dimensions of the generated picture.
 width, height = keras.preprocessing.image.load_img(base_image_path).size
@@ -29,10 +29,6 @@ img_ncols = int(width * img_nrows / height)
 
 img = mpimg.imread(base_image_path)
 ref = mpimg.imread(style_reference_image_path)
-
-# Uncommented for printing numerical representations of the images
-#print(img)
-#print(ref)
 
 def plot_images():
     """Plot the two images, the source and the sample of the style
@@ -121,7 +117,7 @@ def gram_matrix(x):
 
     Returns
     -------
-    x: ?
+    gram: ?
         ?
     """
     x = tf.transpose(x, (2, 0, 1))
@@ -129,16 +125,19 @@ def gram_matrix(x):
     gram = tf.matmul(features, tf.transpose(features))
     return gram
 
-# The "style loss" is designed to maintain
-# the style of the reference image in the generated image.
-# It is based on the gram matrices (which capture style) of
-# feature maps from the style reference image
-# and from the generated image
+#
 def style_loss(style, combination):
-    """
+    """The "style loss" is designed to maintain the style of 
+    the reference image in the generated image.
+    It is based on the gram matrices (which capture style) of
+    feature maps from the style reference image and from the
+    generated image
+
     Parameters
     ----------
-    x: ?
+    style: ?
+        ?
+    combination: ?
         ?
 
     Returns
@@ -150,16 +149,18 @@ def style_loss(style, combination):
     C = gram_matrix(combination)
     channels = 3
     size = img_nrows * img_ncols
-    return tf.reduce_sum(tf.square(S - C)) / (4.0 * (channels ** 2) * (size ** 2))
+    return tf.reduce_sum(input_tensor=tf.square(S - C)) / (4.0 * (channels ** 2) * (size ** 2))
 
-# An auxiliary loss function
-# designed to maintain the "content" of the
-# base image in the generated image
+# 
 def content_loss(base, combination):
-    """
+    """An auxiliary loss function designed to maintain the "content" of 
+    the base image in the generated image
+    
     Parameters
     ----------
-    x: ?
+    base: ?
+        ?
+    combination: ?
         ?
 
     Returns
@@ -167,13 +168,11 @@ def content_loss(base, combination):
     x: ?
         ?
     """
-    return tf.reduce_sum(tf.square(combination - base))
+    return tf.reduce_sum(input_tensor=tf.square(combination - base))
 
-
-# The 3rd loss function, total variation loss,
-# designed to keep the generated image locally coherent
 def total_variation_loss(x):
-    """
+    """The 3rd loss function, total variation loss,
+    designed to keep the generated image locally coherent
 
     Parameters
     ----------
@@ -182,8 +181,8 @@ def total_variation_loss(x):
 
     Returns
     -------
-    x: ?
-        ?
+    _: tensor
+        The reduced tensor, of the same dtype as the input_tensor
     """
     a = tf.square(
         x[:, : img_nrows - 1, : img_ncols - 1, :] - x[:, 1:, : img_ncols - 1, :]
@@ -191,7 +190,7 @@ def total_variation_loss(x):
     b = tf.square(
         x[:, : img_nrows - 1, : img_ncols - 1, :] - x[:, : img_nrows - 1, 1:, :]
     )
-    return tf.reduce_sum(tf.pow(a + b, 1.25))
+    return tf.reduce_sum(input_tensor=tf.pow(a + b, 1.25))
 
 """
 Next, let's create a feature extraction model that retrieves the intermediate activations
@@ -202,14 +201,13 @@ model = vgg19.VGG19(weights="imagenet", include_top=False)
 
 # Get the symbolic outputs of each "key" layer (we gave them unique names).
 outputs_dict = dict([(layer.name, layer.output) for layer in model.layers])
-
 # Set up a model that returns the activation values for every layer in
 # VGG19 (as a dict).
 feature_extractor = keras.Model(inputs=model.inputs, outputs=outputs_dict)
+
 """
 Finally, here's the code that computes the style transfer loss.
 """
-
 # List of layers to use for the style loss.
 style_layer_names = [
     "block1_conv1",
@@ -224,8 +222,8 @@ content_layer_name = "block5_conv2"
 
 
 def compute_loss(combination_image, base_image, style_reference_image):
-    """
-
+    """Compute the value of the loss function.
+    
     Parameters
     ----------
     x: ?
@@ -263,38 +261,49 @@ def compute_loss(combination_image, base_image, style_reference_image):
     loss += total_variation_weight * total_variation_loss(combination_image)
     return loss
 
-# Add a tf.function decorator to loss & gradient computation. 
-# To compile it, and thus make it fast.
 @tf.function
 def compute_loss_and_grads(combination_image, base_image, style_reference_image):
-    """
+    """Compute the value of the loss function and the gradient. tf.function decorator
+    added compile it (make it faster).
 
     Parameters
     ----------
-    x: ?
+    combination_image: ?
         ?
+    base_image:
+
+    style_reference_image:
 
     Returns
     -------
-    x: ?
-        ?
+    loss: ?
+        Value of the loss function.
+    grads: ?
+        Gradients.
     """
     with tf.GradientTape() as tape:
         loss = compute_loss(combination_image, base_image, style_reference_image)
     grads = tape.gradient(loss, combination_image)
     return loss, grads
 
-# The training loop
-# Repeatedly run vanilla gradient descent steps to minimize the loss, and save the
-# resulting image every 100 iterations.
-# We decay the learning rate by 0.96 every 100 steps.
-optimizer = keras.optimizers.SGD(
-    keras.optimizers.schedules.ExponentialDecay(
-        initial_learning_rate=100.0, decay_steps=100, decay_rate=0.96
-    )
-)
 
 if __name__=="__main__":
+    """The training loop
+    Repeatedly run vanilla gradient descent steps to minimize the loss, and save the
+    resulting image every 100 iterations.
+    We decay the learning rate by 0.96 every 100 steps.
+    """
+    optimizer = keras.optimizers.SGD(
+        keras.optimizers.schedules.ExponentialDecay(
+            initial_learning_rate=100.0, 
+            decay_steps=100, 
+            decay_rate=0.96
+        )
+    )
+    # Uncommented for printing numerical representations of the images
+    #print(img)
+    #print(ref)
+
     # Uncommented for plotting the source images
     #plot_images()
 
@@ -302,31 +311,22 @@ if __name__=="__main__":
     style_reference_image = preprocess_image(style_reference_image_path)
     combination_image = tf.Variable(preprocess_image(base_image_path))
 
-    iterations = 30
-    for i in range(1, iterations + 1):
+    for i in range(1, MAX_ITERATIONS + 1):
 
         loss, grads = compute_loss_and_grads(
             combination_image, base_image, style_reference_image
         )
         optimizer.apply_gradients([(grads, combination_image)])
 
-        if i % 2 == 0:
+        if i % 100 == 0:
             print("Iteration %d: loss=%.2f" % (i, loss))
             img = deprocess_image(combination_image.numpy())
-            fname = result_prefix + "_at_iteration_%d.png" % i
+            fname = ROUTE_RESULTS + result_prefix + "_at_iteration_%d.png" % i
             keras.preprocessing.image.save_img(
                 path=fname,
                 x=img
             )
 
-    img = mpimg.imread(result_prefix + "_at_iteration_30.png")
+    img = mpimg.imread(ROUTE_RESULTS + result_prefix + "_at_iteration_" + str(MAX_ITERATIONS) + ".png")
     plt.imshow(img)
     plt.show()
-
-
-"""
-    plt.imshow(img)
-    plt.title("Original Image")
-    plt.show()
-    display(Image(result_prefix + "_at_iteration_100.png"))
-"""

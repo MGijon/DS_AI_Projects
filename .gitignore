@@ -1,1 +1,4 @@
+.DS_Store
 .venv
+GenerativeDL/NeuralStyleTransferKeras/images/
+GenerativeDL/NeuralStyleTransferKeras/models/
